@@ -29,11 +29,40 @@ public class Duke {
                 tasks[taskNumber-1].undoDone();
                 System.out.println("This task has been unmarked.");
                 System.out.println(tasks[taskNumber-1]);
-            }else {
-                tasks[listCount] = new Task(input);
+            }else if (input.startsWith("todo ")) {
+                String description = input.substring(5);
+                tasks[listCount] = new Todo(description);
                 listCount++;
+                System.out.println("Added new task:");
+                System.out.println(tasks[listCount-1]);
+                System.out.println("Number of tasks in list: " + listCount);
+            }else if (input.startsWith("deadline ")) {
+                String remaining = input.substring(9);
+                String[] parts = remaining.split(" /by ", 2);
+                String description = parts[0];
+                String by = parts[1];
 
-                System.out.println("Added: " + input);
+                tasks[listCount] = new Deadline(description, by);
+                listCount++;
+                System.out.println("Added new task:");
+                System.out.println(tasks[listCount-1]);
+                System.out.println("Number of tasks in list: " + listCount);
+            }else if (input.startsWith("event ")) {
+                String remaining = input.substring(6);
+                String[] parts = remaining.split(" /from ", 2);
+                String description = parts[0];
+
+                String[] times = parts[1].split(" /to ", 2);
+                String from = times[0];
+                String to = times[1];
+
+                tasks[listCount] = new Event(description, from, to);
+                listCount++;
+                System.out.println("Added new task: ");
+                System.out.println(tasks[listCount-1]);
+                System.out.println("Number of tasks in list: " + listCount);
+            }else {
+                System.out.println("Unknown: " + input);
             }
         }
         scanner.close();
