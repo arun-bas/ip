@@ -17,6 +17,13 @@ public class Task {
         isDone = false;
     }
 
+    public String toStorageString() {
+        return type.getSymbol()
+                + " | "
+                + (isDone ? "1" : "0")
+                + " | "
+                + description;
+    }
     @Override
     public String toString() {
         String status = isDone ? "X" : " ";

@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class Duke {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage("./data/duke.txt");
+        ArrayList<Task> tasks = storage.load();
 
         System.out.println("Hello! I'm Bubba.");
         System.out.println("What can I do for you?");
@@ -24,11 +25,13 @@ public class Duke {
                 } else if (input.startsWith("mark ")) {
                     int taskNumber = Integer.parseInt(input.substring(5));
                     tasks.get(taskNumber - 1).done();
+                    storage.save(tasks);
                     System.out.println("Good job, this task is done!");
                     System.out.println(tasks.get(taskNumber - 1));
                 } else if (input.startsWith("unmark ")) {
                     int taskNumber = Integer.parseInt(input.substring(7));
                     tasks.get(taskNumber - 1).undoDone();
+                    storage.save(tasks);
                     System.out.println("This task has been unmarked.");
                     System.out.println(tasks.get(taskNumber - 1));
                 } else if (input.startsWith("delete ")) {
@@ -40,6 +43,7 @@ public class Duke {
                         }
 
                         Task deletedTask = tasks.remove(idx);
+                        storage.save(tasks);
                         System.out.println("Removed the following task: ");
                         System.out.println(deletedTask);
                         System.out.println("Number of tasks in list: " + tasks.size());
@@ -55,6 +59,7 @@ public class Duke {
                     }
                     Task task = new Todo(description);
                     tasks.add(task);
+                    storage.save(tasks);
                     System.out.println("Added new task:");
                     System.out.println(task);
                     System.out.println("Number of tasks in list: " + tasks.size());
@@ -66,6 +71,7 @@ public class Duke {
 
                     Task task = new Deadline(description, by);
                     tasks.add(task);
+                    storage.save(tasks);
                     System.out.println("Added new task:");
                     System.out.println(task);
                     System.out.println("Number of tasks in list: " + tasks.size());
@@ -80,6 +86,7 @@ public class Duke {
 
                     Task task = new Event(description, from, to);
                     tasks.add(task);
+                    storage.save(tasks);
                     System.out.println("Added new task: ");
                     System.out.println(task);
                     System.out.println("Number of tasks in list: " + tasks.size());
