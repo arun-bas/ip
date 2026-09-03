@@ -3,8 +3,12 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Storage {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private final String filePath;
 
     public Storage(String filePath) {
@@ -30,29 +34,34 @@ public class Storage {
 
                 String[] parts = line.split(" \\| ");
 
-                String type = parts[0];
-                boolean isDone = parts[1].equals("1");
-                String description = parts[2];
-                Task task;
+                try {
+                    String type = parts[0];
+                    boolean isDone = parts[1].equals("1");
+                    String description = parts[2];
+                    Task task;
+                    if (type.equals("T")) {
+                        task = new Todo(description);
+                    } else if (type.equals("D")) {
+                        LocalDateTime by = LocalDateTime.parse(parts[3], formatter);
+                        task = new Deadline(description, by);
+                    } else if (type.equals("E")) {
+                        //String from = parts[3];
+                        //String to = parts[4];
+                        LocalDateTime from = LocalDateTime.parse(parts[3], formatter);
+                        LocalDateTime to = LocalDateTime.parse(parts[4], formatter);
+                        task = new Event(description, from, to);
+                    } else {
+                        continue;
+                    }
 
-                if (type.equals("T")) {
-                    task = new Todo(description);
-                } else if (type.equals("D")) {
-                    String by = parts[3];
-                    task = new Deadline(description, by);
-                } else if (type.equals("E")) {
-                    String from = parts[3];
-                    String to = parts[4];
-                    task = new Event(description, from, to);
-                } else {
-                    continue;
+                    if (isDone) {
+                        task.done();
+                    }
+
+                    tasks.add(task);
+                } catch (DateTimeParseException e){
+                    System.out.println("Enter the correct format!");
                 }
-
-                if (isDone) {
-                    task.done();
-                }
-
-                tasks.add(task);
             }
 
             scanner.close();

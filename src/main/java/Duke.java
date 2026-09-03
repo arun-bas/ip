@@ -1,9 +1,12 @@
-import javax.swing.tree.ExpandVetoException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Duke {
     public static void main(String[] args) {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage("./data/duke.txt");
         ArrayList<Task> tasks = storage.load();
@@ -67,29 +70,63 @@ public class Duke {
                     String remaining = input.substring(9);
                     String[] parts = remaining.split(" /by ", 2);
                     String description = parts[0];
-                    String by = parts[1];
+                    //String by = parts[1];
 
-                    Task task = new Deadline(description, by);
-                    tasks.add(task);
-                    storage.save(tasks);
-                    System.out.println("Added new task:");
-                    System.out.println(task);
-                    System.out.println("Number of tasks in list: " + tasks.size());
+                    //Task task = new Deadline(description, by);
+                    String byText = parts[1].trim();
+                    if (description.isEmpty()) {
+                        throw new BubbaException("Description is empty!");
+                    }
+                    if (byText.isEmpty()) {
+                        throw new BubbaException("The date of a deadline can't be empty!");
+                    }
+
+                    try {
+                        LocalDateTime by = LocalDateTime.parse(byText, inputFormatter);
+
+                        Task task = new Deadline(description, by);
+                        tasks.add(task);
+                        storage.save(tasks);
+                        System.out.println("Added new task:");
+                        System.out.println(task);
+                        System.out.println("Number of tasks in list: " + tasks.size());
+                    } catch (DateTimeParseException e) {
+                        throw new BubbaException("Pleae enter deadline in d/M/yyyy HHmm format!");
+                    }
+
                 } else if (input.startsWith("event ")) {
                     String remaining = input.substring(6);
                     String[] parts = remaining.split(" /from ", 2);
                     String description = parts[0];
 
                     String[] times = parts[1].split(" /to ", 2);
-                    String from = times[0];
-                    String to = times[1];
+                    String fromText = times[0].trim();
+                    String toText = times[1].trim();
+                    if (description.isEmpty()) {
+                        throw new BubbaException("Description cannot be empty!");
+                    }
 
-                    Task task = new Event(description, from, to);
-                    tasks.add(task);
-                    storage.save(tasks);
-                    System.out.println("Added new task: ");
-                    System.out.println(task);
-                    System.out.println("Number of tasks in list: " + tasks.size());
+                    if (fromText.isEmpty()) {
+                        throw new BubbaException("The from time cannot be empty!");
+                    }
+
+                    if (toText.isEmpty()) {
+                        throw new BubbaException("The to time cannot be empty!");
+                    }
+
+                    try {
+                        LocalDateTime from = LocalDateTime.parse(fromText, inputFormatter);
+                        LocalDateTime to = LocalDateTime.parse(toText, inputFormatter);
+                        Task task = new Event(description, from, to);
+                        tasks.add(task);
+                        storage.save(tasks);
+                        System.out.println("Added new task: ");
+                        System.out.println(task);
+                        System.out.println("Number of tasks in list: " + tasks.size());
+                    } catch (DateTimeParseException e) {
+                        throw new BubbaException("Enter the event time in the correct format d/M/yyyy HHmm!");
+                    }
+
                 } else {
                     throw new BubbaException("Sorry, unsure what you mean by that.");
                 }
