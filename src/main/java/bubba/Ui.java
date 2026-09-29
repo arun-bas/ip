@@ -43,6 +43,26 @@ public class Ui {
     }
 
     /**
+     * Returns guidance for every command supported by Bubba.
+     *
+     * @return Command names and their required formats.
+     */
+    public String getHelpMessage() {
+        return joinLines(
+                "Here are the commands I understand:",
+                "list",
+                "todo <description>",
+                "deadline <description> /by <d/M/yyyy HHmm>",
+                "event <description> /from <d/M/yyyy HHmm> /to <d/M/yyyy HHmm>",
+                "mark <task number>",
+                "unmark <task number>",
+                "delete <task number>",
+                "find <keyword>",
+                "help",
+                "bye");
+    }
+
+    /**
      * Returns tasks in order, numbered starting from one.
      *
      * @param tasks Tasks to display.
