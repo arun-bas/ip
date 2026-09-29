@@ -62,6 +62,8 @@ public class Bubba {
                             saveTasks();
                             ui.showMarked(task, isDone);
                             break;
+                        default:
+                            throw new AssertionError("Unexpected command type: " + command.type());
                     }
                 } catch (BubbaException e) {
                     ui.showError(e.getMessage());
