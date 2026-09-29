@@ -25,6 +25,8 @@ public class Parser {
         EXIT,
         /** Displays all tasks. */
         LIST,
+        /** Displays guidance for all supported commands. */
+        HELP,
         /** Marks a task as completed. */
         MARK,
         /** Marks a task as incomplete. */
@@ -62,6 +64,9 @@ public class Parser {
         }
         if (input.equals("list")) {
             return new ParsedCommand(Type.LIST, null, 0, null);
+        }
+        if (input.equals("help")) {
+            return new ParsedCommand(Type.HELP, null, 0, null);
         }
         if (input.equals("find") || input.startsWith("find ")) {
             String keyword = input.substring(4).trim();

@@ -68,6 +68,8 @@ public class Bubba {
                     return ui.getGoodbyeMessage();
                 case LIST:
                     return ui.getTaskListMessage(tasks);
+                case HELP:
+                    return ui.getHelpMessage();
                 case FIND:
                     return ui.getMatchingTasksMessage(tasks.find(command.keyword()));
                 case ADD:

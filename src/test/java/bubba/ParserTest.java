@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
  */
 public class ParserTest {
     @Test
-    public void parse_listAndBye_returnsCorrectTypes() throws BubbaException {
+    public void parse_commandsWithoutArguments_returnsCorrectTypes() throws BubbaException {
         assertEquals(Parser.Type.LIST, Parser.parse("list").type());
+        assertEquals(Parser.Type.HELP, Parser.parse("help").type());
         assertEquals(Parser.Type.EXIT, Parser.parse("bye").type());
     }
 
@@ -95,7 +96,7 @@ public class ParserTest {
 
     @Test
     public void parse_unknownOrEmptyCommand_throwsException() {
-        for (String input : new String[] {"", "hello", "list extra", "todoSomething"}) {
+        for (String input : new String[] {"", "hello", "list extra", "help extra", "todoSomething"}) {
             assertThrows(BubbaException.class, () -> Parser.parse(input), input);
         }
     }
