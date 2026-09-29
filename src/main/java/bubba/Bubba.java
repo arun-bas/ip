@@ -31,6 +31,9 @@ public class Bubba {
                     case LIST:
                         ui.showList(tasks);
                         break;
+                    case FIND:
+                        ui.showMatchingTasks(tasks.find(command.keyword()));
+                        break;
                     case ADD:
                         task = command.task();
                         tasks.add(task);

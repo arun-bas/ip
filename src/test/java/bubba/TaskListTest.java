@@ -52,4 +52,25 @@ public class TaskListTest {
         assertThrows(BubbaException.class, () -> tasks.delete(1));
         assertEquals(0, tasks.size());
     }
+
+    @Test
+    public void find_matchingKeyword_returnsMatchesInOriginalOrder() {
+        Task readBook = new Todo("read book");
+        Task exercise = new Todo("exercise");
+        Task returnBook = new Todo("return BOOK to library");
+        TaskList tasks = new TaskList(List.of(readBook, exercise, returnBook));
+
+        assertEquals(List.of(readBook, returnBook), tasks.find("book"));
+        assertEquals(3, tasks.size());
+    }
+
+    @Test
+    public void find_phraseAndDifferentCase_matchesDescriptionOnly() {
+        Task matchingTask = new Todo("Read The Book");
+        Task nonMatchingTask = new Todo("read notes");
+        TaskList tasks = new TaskList(List.of(matchingTask, nonMatchingTask));
+
+        assertEquals(List.of(matchingTask), tasks.find("the book"));
+        assertEquals(List.of(), tasks.find("deadline"));
+    }
 }
