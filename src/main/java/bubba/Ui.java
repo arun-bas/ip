@@ -1,5 +1,6 @@
 package bubba;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -47,6 +48,19 @@ public class Ui {
         System.out.println("Current list of tasks:");
         int number = 1;
         for (Task task : tasks.toList()) {
+            System.out.println(number++ + ". " + task);
+        }
+    }
+
+    /**
+     * Displays matching tasks in their original order, numbered from one.
+     *
+     * @param tasks Matching tasks to display.
+     */
+    public void showMatchingTasks(List<Task> tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        int number = 1;
+        for (Task task : tasks) {
             System.out.println(number++ + ". " + task);
         }
     }

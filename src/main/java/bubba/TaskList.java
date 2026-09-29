@@ -2,6 +2,7 @@ package bubba;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Owns an ordered task list and provides operations using one-based task numbers.
@@ -87,6 +88,24 @@ public class TaskList {
      */
     public int size() {
         return tasks.size();
+    }
+
+    /**
+     * Returns tasks whose descriptions contain the keyword, ignoring letter case.
+     * The matches retain their order from the full task list.
+     *
+     * @param keyword Text to find within task descriptions.
+     * @return Matching tasks in their original order.
+     */
+    public ArrayList<Task> find(String keyword) {
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.description.toLowerCase(Locale.ROOT).contains(normalizedKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
     }
 
     /**

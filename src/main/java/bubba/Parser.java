@@ -32,7 +32,9 @@ public class Parser {
         /** Removes a task. */
         DELETE,
         /** Appends a new task. */
-        ADD
+        ADD,
+        /** Searches task descriptions for a keyword. */
+        FIND
     }
 
     /**
@@ -41,8 +43,9 @@ public class Parser {
      * @param type Operation to execute.
      * @param task Task for an ADD command, or {@code null} for other operations.
      * @param taskNumber One-based number for MARK, UNMARK or DELETE, or zero for other operations.
+     * @param keyword Search text for FIND, or {@code null} for other operations.
      */
-    public record ParsedCommand(Type type, Task task, int taskNumber) {
+    public record ParsedCommand(Type type, Task task, int taskNumber, String keyword) {
     }
 
     /**
@@ -55,17 +58,24 @@ public class Parser {
      */
     public static ParsedCommand parse(String input) throws BubbaException {
         if (input.equals("bye")) {
-            return new ParsedCommand(Type.EXIT, null, 0);
+            return new ParsedCommand(Type.EXIT, null, 0, null);
         }
         if (input.equals("list")) {
-            return new ParsedCommand(Type.LIST, null, 0);
+            return new ParsedCommand(Type.LIST, null, 0, null);
+        }
+        if (input.equals("find") || input.startsWith("find ")) {
+            String keyword = input.substring(4).trim();
+            if (keyword.isEmpty()) {
+                throw new BubbaException("Search keyword cannot be empty!");
+            }
+            return new ParsedCommand(Type.FIND, null, 0, keyword);
         }
         for (Type type : new Type[] {Type.MARK, Type.UNMARK, Type.DELETE}) {
             String keyword = type.name().toLowerCase(java.util.Locale.ROOT);
             if (input.equals(keyword) || input.startsWith(keyword + " ")) {
                 try {
                     int number = Integer.parseInt(input.substring(keyword.length()).trim());
-                    return new ParsedCommand(type, null, number);
+                    return new ParsedCommand(type, null, number, null);
                 } catch (NumberFormatException e) {
                     throw new BubbaException("Please enter valid task number.");
                 }
@@ -76,15 +86,15 @@ public class Parser {
             if (description.isBlank()) {
                 throw new BubbaException("Todo description cannot be empty!");
             }
-            return new ParsedCommand(Type.ADD, new Todo(description), 0);
+            return new ParsedCommand(Type.ADD, new Todo(description), 0, null);
         }
         if (input.equals("deadline") || input.startsWith("deadline ")) {
             return new ParsedCommand(
-                    Type.ADD, parseDeadline(input.substring(8).stripLeading()), 0);
+                    Type.ADD, parseDeadline(input.substring(8).stripLeading()), 0, null);
         }
         if (input.equals("event") || input.startsWith("event ")) {
             return new ParsedCommand(
-                    Type.ADD, parseEvent(input.substring(5).stripLeading()), 0);
+                    Type.ADD, parseEvent(input.substring(5).stripLeading()), 0, null);
         }
         throw new BubbaException("Sorry, unsure what you mean by that.");
     }

@@ -30,6 +30,13 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_find_preservesTrimmedKeyword() throws BubbaException {
+        Parser.ParsedCommand command = Parser.parse("find   return book  ");
+        assertEquals(Parser.Type.FIND, command.type());
+        assertEquals("return book", command.keyword());
+    }
+
+    @Test
     public void parse_todo_createsTaskWithDescription() throws BubbaException {
         Parser.ParsedCommand command = Parser.parse("todo read book");
         assertEquals(Parser.Type.ADD, command.type());
@@ -67,7 +74,8 @@ public class ParserTest {
 
     @Test
     public void parse_missingTaskDetails_throwsException() {
-        for (String input : new String[] {"todo", "todo   ", "deadline", "deadline book",
+        for (String input : new String[] {"find", "find   ", "todo", "todo   ",
+                "deadline", "deadline book",
                 "deadline book /by ", "event", "event meeting",
                 "event meeting /from 3/12/2026 1400",
                 "event meeting /from  /to 3/12/2026 1600",
