@@ -7,15 +7,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/** Loads and saves task records; leaves displaying errors to the user interface. */
 public class Storage {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private final ArrayList<String> loadWarnings = new ArrayList<>();
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private final String filePath;
 
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /** Returns a copy of warnings from the most recent load for Ui to display. */
+    public ArrayList<String> getLoadWarnings() {
+        return new ArrayList<>(loadWarnings);
+    }
+
     public ArrayList<Task> load() {
+        loadWarnings.clear();
         ArrayList<Task> tasks = new ArrayList<>();
 
         File file = new File(filePath);
@@ -60,20 +68,20 @@ public class Storage {
 
                     tasks.add(task);
                 } catch (DateTimeParseException e){
-                    System.out.println("Enter the correct format!");
+                    loadWarnings.add("Enter the correct format!");
                 }
             }
 
             scanner.close();
 
         } catch (FileNotFoundException e) {
-            System.out.println("File wasn't found!");
+            loadWarnings.add("File wasn't found!");
         }
 
         return tasks;
     }
 
-    public void save(ArrayList<Task> tasks) {
+    public void save(ArrayList<Task> tasks) throws BubbaException {
         try {
             File file = new File(filePath);
 
@@ -90,7 +98,7 @@ public class Storage {
 
             writer.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to save tasks to file!");
+            throw new BubbaException("Unable to save tasks to file!");
         }
     }
 }
