@@ -1,0 +1,45 @@
+package bubba;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+
+/**
+ * Displays one message in Bubba's chat window.
+ */
+public class DialogBox extends HBox {
+    private static final double MAXIMUM_MESSAGE_WIDTH = 320;
+    private static final Insets MESSAGE_MARGIN = new Insets(4, 8, 4, 8);
+
+    private DialogBox(String text, boolean isUser) {
+        Label message = new Label(text);
+        message.setWrapText(true);
+        message.setMaxWidth(MAXIMUM_MESSAGE_WIDTH);
+        message.getStyleClass().add(isUser ? "user-bubble" : "bubba-bubble");
+
+        setAlignment(isUser ? Pos.TOP_RIGHT : Pos.TOP_LEFT);
+        setPadding(MESSAGE_MARGIN);
+        getChildren().add(message);
+    }
+
+    /**
+     * Creates a right-aligned dialog for a command entered by the user.
+     *
+     * @param text User's command.
+     * @return User dialog box.
+     */
+    public static DialogBox getUserDialog(String text) {
+        return new DialogBox(text, true);
+    }
+
+    /**
+     * Creates a left-aligned dialog for Bubba's response.
+     *
+     * @param text Bubba's response.
+     * @return Bubba dialog box.
+     */
+    public static DialogBox getBubbaDialog(String text) {
+        return new DialogBox(text, false);
+    }
+}

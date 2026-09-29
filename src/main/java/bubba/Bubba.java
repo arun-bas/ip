@@ -7,9 +7,10 @@ public class Bubba {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
+    private boolean isExitRequested;
 
     /**
-     * Initializes the chatbot and loads saved tasks, displaying any loading warnings.
+     * Initializes the chatbot and loads saved tasks.
      *
      * @param filePath Path used to load and save tasks.
      */
@@ -17,56 +18,20 @@ public class Bubba {
         ui = new Ui();
         storage = new Storage(filePath);
         tasks = new TaskList(storage.load());
-        for (String warning : storage.getLoadWarnings()) {
-            ui.showError(warning);
-        }
+        isExitRequested = false;
     }
 
     /**
      * Processes commands until the user exits or input ends, then closes console input.
      */
     public void run() {
-        ui.showWelcome();
+        ui.showMessage(getWelcomeMessage());
         try {
             String input;
             while ((input = ui.readCommand()) != null) {
-                try {
-                    Parser.ParsedCommand command = Parser.parse(input);
-                    Task task;
-                    switch (command.type()) {
-                        case EXIT:
-                            ui.showGoodbye();
-                            return;
-                        case LIST:
-                            ui.showList(tasks);
-                            break;
-                        case FIND:
-                            ui.showMatchingTasks(tasks.find(command.keyword()));
-                            break;
-                        case ADD:
-                            task = command.task();
-                            tasks.add(task);
-                            saveTasks();
-                            ui.showAdded(task, tasks.size());
-                            break;
-                        case DELETE:
-                            task = tasks.delete(command.taskNumber());
-                            saveTasks();
-                            ui.showDeleted(task, tasks.size());
-                            break;
-                        case MARK:
-                            // Fallthrough
-                        case UNMARK:
-                            boolean isDone = command.type() == Parser.Type.MARK;
-                            task = tasks.mark(command.taskNumber(), isDone);
-                            saveTasks();
-                            ui.showMarked(task, isDone);
-                            break;
-                        default:
-                            throw new AssertionError("Unexpected command type: " + command.type());
-                    }
-                } catch (BubbaException e) {
-                    ui.showError(e.getMessage());
+                ui.showMessage(getResponse(input));
+                if (isExitRequested) {
+                    return;
                 }
             }
         } finally {
@@ -75,14 +40,71 @@ public class Bubba {
     }
 
     /**
-     * Reports a save failure while retaining the user's change in memory.
+     * Returns the greeting and any warnings produced while loading saved tasks.
+     *
+     * @return Initial message for a user interface.
      */
-    private void saveTasks() {
-        try {
-            storage.save(tasks.toList());
-        } catch (BubbaException e) {
-            ui.showError(e.getMessage());
+    public String getWelcomeMessage() {
+        StringBuilder message = new StringBuilder(ui.getWelcomeMessage());
+        for (String warning : storage.getLoadWarnings()) {
+            message.append('\n').append(ui.getErrorMessage(warning));
         }
+        return message.toString();
+    }
+
+    /**
+     * Processes one command and returns the response for display by any user interface.
+     *
+     * @param input Command entered by the user.
+     * @return Bubba's response, including validation or storage errors.
+     */
+    public String getResponse(String input) {
+        try {
+            Parser.ParsedCommand command = Parser.parse(input);
+            Task task;
+            switch (command.type()) {
+                case EXIT:
+                    isExitRequested = true;
+                    return ui.getGoodbyeMessage();
+                case LIST:
+                    return ui.getTaskListMessage(tasks);
+                case FIND:
+                    return ui.getMatchingTasksMessage(tasks.find(command.keyword()));
+                case ADD:
+                    task = command.task();
+                    tasks.add(task);
+                    saveTasks();
+                    return ui.getTaskAddedMessage(task, tasks.size());
+                case DELETE:
+                    task = tasks.delete(command.taskNumber());
+                    saveTasks();
+                    return ui.getTaskDeletedMessage(task, tasks.size());
+                case MARK:
+                    // Fallthrough
+                case UNMARK:
+                    boolean isDone = command.type() == Parser.Type.MARK;
+                    task = tasks.mark(command.taskNumber(), isDone);
+                    saveTasks();
+                    return ui.getTaskMarkedMessage(task, isDone);
+                default:
+                    throw new AssertionError("Unexpected command type: " + command.type());
+            }
+        } catch (BubbaException e) {
+            return ui.getErrorMessage(e.getMessage());
+        }
+    }
+
+    /**
+     * Returns whether the most recent valid command requested that Bubba exit.
+     *
+     * @return {@code true} after a valid {@code bye} command.
+     */
+    public boolean isExitRequested() {
+        return isExitRequested;
+    }
+
+    private void saveTasks() throws BubbaException {
+        storage.save(tasks.toList());
     }
 
     /**
