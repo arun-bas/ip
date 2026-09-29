@@ -13,6 +13,8 @@ public class DialogBox extends HBox {
     private static final Insets MESSAGE_MARGIN = new Insets(4, 8, 4, 8);
 
     private DialogBox(String text, boolean isUser) {
+        assert text != null : "Dialog text must not be null";
+
         Label message = new Label(text);
         message.setWrapText(true);
         message.setMaxWidth(MAXIMUM_MESSAGE_WIDTH);
