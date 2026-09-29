@@ -1,14 +1,16 @@
 package bubba;
 
-import java.time.LocalDateTime;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/** Checks command interpretation and rejection of malformed user input. */
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+
+/**
+ * Checks command interpretation and rejection of malformed user input.
+ */
 public class ParserTest {
     @Test
     public void parse_listAndBye_returnsCorrectTypes() throws BubbaException {

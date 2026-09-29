@@ -26,6 +26,7 @@ public class Task {
                 + " | "
                 + description;
     }
+
     @Override
     public String toString() {
         String status = isDone ? "X" : " ";

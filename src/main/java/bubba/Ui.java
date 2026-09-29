@@ -2,7 +2,9 @@ package bubba;
 
 import java.util.Scanner;
 
-/** Handles console input and all messages shown to the user. */
+/**
+ * Handles console input and all messages shown to the user.
+ */
 public class Ui {
     private final Scanner scanner = new Scanner(System.in);
 
@@ -11,7 +13,9 @@ public class Ui {
         System.out.println("What can I do for you?");
     }
 
-    /** Returns null when the input stream has ended. */
+    /**
+     * Returns null when the input stream has ended.
+     */
     public String readCommand() {
         return scanner.hasNextLine() ? scanner.nextLine() : null;
     }
@@ -41,7 +45,9 @@ public class Ui {
     }
 
     public void showMarked(Task task, boolean isDone) {
-        System.out.println(isDone ? "Good job, this task is done!" : "This task has been unmarked.");
+        System.out.println(isDone
+                ? "Good job, this task is done!"
+                : "This task has been unmarked.");
         System.out.println(task);
     }
 

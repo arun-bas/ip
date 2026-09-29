@@ -6,11 +6,12 @@ public enum TaskType {
     EVENT("E");
 
     private final String symbol;
+
     TaskType(String symbol) {
         this.symbol = symbol;
     }
 
-    public String getSymbol(){
+    public String getSymbol() {
         return symbol;
     }
 }

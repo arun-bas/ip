@@ -3,7 +3,9 @@ package bubba;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Owns the tasks and provides operations using the user's one-based task numbers. */
+/**
+ * Owns the tasks and provides operations using the user's one-based task numbers.
+ */
 public class TaskList {
     private final ArrayList<Task> tasks;
 
@@ -46,7 +48,9 @@ public class TaskList {
         return tasks.size();
     }
 
-    /** Returns a copy so callers cannot add or remove tasks behind this class's back. */
+    /**
+     * Returns a copy so callers cannot add or remove tasks behind this class's back.
+     */
     public ArrayList<Task> toList() {
         return new ArrayList<>(tasks);
     }

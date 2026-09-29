@@ -1,6 +1,8 @@
 package bubba;
 
-/** Coordinates user input, task operations and persistence for Bubba. */
+/**
+ * Coordinates user input, task operations and persistence for Bubba.
+ */
 public class Bubba {
     private final Storage storage;
     private final TaskList tasks;
@@ -15,7 +17,9 @@ public class Bubba {
         }
     }
 
-    /** Runs the command loop, leaving parsing and presentation to their own classes. */
+    /**
+     * Runs the command loop, leaving parsing and presentation to their own classes.
+     */
     public void run() {
         ui.showWelcome();
         try {
@@ -25,30 +29,31 @@ public class Bubba {
                     Parser.ParsedCommand command = Parser.parse(input);
                     Task task;
                     switch (command.type()) {
-                    case EXIT:
-                        ui.showGoodbye();
-                        return;
-                    case LIST:
-                        ui.showList(tasks);
-                        break;
-                    case ADD:
-                        task = command.task();
-                        tasks.add(task);
-                        saveTasks();
-                        ui.showAdded(task, tasks.size());
-                        break;
-                    case DELETE:
-                        task = tasks.delete(command.taskNumber());
-                        saveTasks();
-                        ui.showDeleted(task, tasks.size());
-                        break;
-                    case MARK:
-                    case UNMARK:
-                        boolean isDone = command.type() == Parser.Type.MARK;
-                        task = tasks.mark(command.taskNumber(), isDone);
-                        saveTasks();
-                        ui.showMarked(task, isDone);
-                        break;
+                        case EXIT:
+                            ui.showGoodbye();
+                            return;
+                        case LIST:
+                            ui.showList(tasks);
+                            break;
+                        case ADD:
+                            task = command.task();
+                            tasks.add(task);
+                            saveTasks();
+                            ui.showAdded(task, tasks.size());
+                            break;
+                        case DELETE:
+                            task = tasks.delete(command.taskNumber());
+                            saveTasks();
+                            ui.showDeleted(task, tasks.size());
+                            break;
+                        case MARK:
+                            // Fallthrough
+                        case UNMARK:
+                            boolean isDone = command.type() == Parser.Type.MARK;
+                            task = tasks.mark(command.taskNumber(), isDone);
+                            saveTasks();
+                            ui.showMarked(task, isDone);
+                            break;
                     }
                 } catch (BubbaException e) {
                     ui.showError(e.getMessage());
@@ -59,7 +64,9 @@ public class Bubba {
         }
     }
 
-    /** Reports a save failure while retaining the user's change in memory. */
+    /**
+     * Reports a save failure while retaining the user's change in memory.
+     */
     private void saveTasks() {
         try {
             storage.save(tasks.toList());

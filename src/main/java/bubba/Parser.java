@@ -4,16 +4,23 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-/** Interprets user commands without changing tasks or interacting with the console. */
+/**
+ * Interprets user commands without changing tasks or interacting with the console.
+ */
 public class Parser {
-    private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final DateTimeFormatter INPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
-    /** The operations supported by the existing command language. */
+    /**
+     * The operations supported by the existing command language.
+     */
     public enum Type {
         EXIT, LIST, MARK, UNMARK, DELETE, ADD
     }
 
-    /** Parsed input: ADD uses task, while MARK, UNMARK and DELETE use taskNumber. */
+    /**
+     * Parsed input: ADD uses task, while MARK, UNMARK and DELETE use taskNumber.
+     */
     public record ParsedCommand(Type type, Task task, int taskNumber) {
     }
 
@@ -43,10 +50,12 @@ public class Parser {
             return new ParsedCommand(Type.ADD, new Todo(description), 0);
         }
         if (input.equals("deadline") || input.startsWith("deadline ")) {
-            return new ParsedCommand(Type.ADD, parseDeadline(input.substring(8).stripLeading()), 0);
+            return new ParsedCommand(
+                    Type.ADD, parseDeadline(input.substring(8).stripLeading()), 0);
         }
         if (input.equals("event") || input.startsWith("event ")) {
-            return new ParsedCommand(Type.ADD, parseEvent(input.substring(5).stripLeading()), 0);
+            return new ParsedCommand(
+                    Type.ADD, parseEvent(input.substring(5).stripLeading()), 0);
         }
         throw new BubbaException("Sorry, unsure what you mean by that.");
     }
@@ -88,7 +97,8 @@ public class Parser {
             throw new BubbaException("The to time cannot be empty!");
         }
         try {
-            return new Event(parts[0], LocalDateTime.parse(times[0].trim(), INPUT_FORMATTER),
+            return new Event(
+                    parts[0], LocalDateTime.parse(times[0].trim(), INPUT_FORMATTER),
                     LocalDateTime.parse(times[1].trim(), INPUT_FORMATTER));
         } catch (DateTimeParseException e) {
             throw new BubbaException("Enter the event time in the correct format d/M/yyyy HHmm!");

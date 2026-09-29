@@ -3,13 +3,15 @@ package bubba;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-/** Loads and saves task records; leaves displaying errors to the user interface. */
+/**
+ * Loads and saves task records; leaves displaying errors to the user interface.
+ */
 public class Storage {
     private final ArrayList<String> loadWarnings = new ArrayList<>();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
@@ -19,7 +21,9 @@ public class Storage {
         this.filePath = filePath;
     }
 
-    /** Returns a copy of warnings from the most recent load for Ui to display. */
+    /**
+     * Returns a copy of warnings from the most recent load for Ui to display.
+     */
     public ArrayList<String> getLoadWarnings() {
         return new ArrayList<>(loadWarnings);
     }
@@ -37,7 +41,7 @@ public class Storage {
             Scanner scanner = new Scanner(file);
 
             while (scanner.hasNextLine()) {
-                String line =  scanner.nextLine();
+                String line = scanner.nextLine();
                 if (line.trim().isEmpty()) {
                     continue;
                 }
@@ -67,7 +71,7 @@ public class Storage {
                     }
 
                     tasks.add(task);
-                } catch (DateTimeParseException e){
+                } catch (DateTimeParseException e) {
                     loadWarnings.add("Enter the correct format!");
                 }
             }
@@ -81,7 +85,9 @@ public class Storage {
         return tasks;
     }
 
-    /** Also accepts ISO dates written by earlier versions of the event serializer. */
+    /**
+     * Also accepts ISO dates written by earlier versions of the event serializer.
+     */
     private LocalDateTime parseEventDate(String text) {
         try {
             return LocalDateTime.parse(text, formatter);
@@ -101,7 +107,7 @@ public class Storage {
 
             PrintWriter writer = new PrintWriter(file);
 
-            for (Task task: tasks) {
+            for (Task task : tasks) {
                 writer.println(task.toStorageString());
             }
 
