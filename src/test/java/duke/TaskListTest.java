@@ -1,0 +1,55 @@
+package duke;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+/** Checks deletion boundaries, ordering and preservation of tasks after invalid requests. */
+public class TaskListTest {
+    @Test
+    public void delete_validNumber_returnsTaskAndPreservesRemainingOrder() throws BubbaException {
+        for (int number = 1; number <= 3; number++) {
+            Task first = new Todo("first");
+            Task second = new Todo("second");
+            Task third = new Todo("third");
+            List<Task> original = List.of(first, second, third);
+            TaskList tasks = new TaskList(original);
+
+            assertSame(original.get(number - 1), tasks.delete(number));
+            assertEquals(2, tasks.size());
+            List<Task> expected = new java.util.ArrayList<>(original);
+            expected.remove(number - 1);
+            assertEquals(expected, tasks.toList());
+        }
+    }
+
+    @Test
+    public void delete_onlyTask_leavesEmptyList() throws BubbaException {
+        Task task = new Todo("only task");
+        TaskList tasks = new TaskList(List.of(task));
+        assertSame(task, tasks.delete(1));
+        assertEquals(0, tasks.size());
+    }
+
+    @Test
+    public void delete_outOfRange_throwsWithoutChangingList() {
+        Task first = new Todo("first");
+        Task second = new Todo("second");
+        TaskList tasks = new TaskList(List.of(first, second));
+        for (int number : new int[] {-1, 0, 3, Integer.MAX_VALUE}) {
+            assertThrows(BubbaException.class, () -> tasks.delete(number));
+            assertEquals(List.of(first, second), tasks.toList());
+        }
+    }
+
+    @Test
+    public void delete_emptyList_throwsException() {
+        TaskList tasks = new TaskList();
+        assertThrows(BubbaException.class, () -> tasks.delete(1));
+        assertEquals(0, tasks.size());
+    }
+}
