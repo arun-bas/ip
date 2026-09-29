@@ -52,52 +52,56 @@ public class Storage {
             return tasks;
         }
 
-        try {
-            Scanner scanner = new Scanner(file);
-
+        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
-
-                String[] parts = line.split(" \\| ");
-
-                try {
-                    String type = parts[0];
-                    boolean isDone = parts[1].equals("1");
-                    String description = parts[2];
-                    Task task;
-                    if (type.equals("T")) {
-                        task = new Todo(description);
-                    } else if (type.equals("D")) {
-                        LocalDateTime by = LocalDateTime.parse(parts[3], formatter);
-                        task = new Deadline(description, by);
-                    } else if (type.equals("E")) {
-                        LocalDateTime from = parseEventDate(parts[3]);
-                        LocalDateTime to = parseEventDate(parts[4]);
-                        task = new Event(description, from, to);
-                    } else {
-                        continue;
-                    }
-
-                    if (isDone) {
-                        task.done();
-                    }
-
-                    tasks.add(task);
-                } catch (DateTimeParseException e) {
-                    loadWarnings.add("Enter the correct format!");
-                }
+                loadTask(scanner.nextLine(), tasks);
             }
-
-            scanner.close();
-
         } catch (FileNotFoundException e) {
             loadWarnings.add("File wasn't found!");
         }
 
         return tasks;
+    }
+
+    private void loadTask(String line, ArrayList<Task> tasks) {
+        if (line.isBlank()) {
+            return;
+        }
+
+        try {
+            Task task = parseTask(line);
+            if (task != null) {
+                tasks.add(task);
+            }
+        } catch (DateTimeParseException e) {
+            loadWarnings.add("Enter the correct format!");
+        }
+    }
+
+    private Task parseTask(String line) {
+        String[] parts = line.split(" \\| ");
+        Task task = createTask(parts);
+        if (task != null && parts[1].equals("1")) {
+            task.done();
+        }
+        return task;
+    }
+
+    private Task createTask(String[] parts) {
+        String description = parts[2];
+        switch (parts[0]) {
+            case "T":
+                return new Todo(description);
+            case "D":
+                LocalDateTime by = LocalDateTime.parse(parts[3], formatter);
+                return new Deadline(description, by);
+            case "E":
+                LocalDateTime from = parseEventDate(parts[3]);
+                LocalDateTime to = parseEventDate(parts[4]);
+                return new Event(description, from, to);
+            default:
+                return null;
+        }
     }
 
     /**
