@@ -26,6 +26,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(mainWindowResource);
         VBox root = loader.load();
         MainWindow controller = loader.getController();
+        assert controller != null : "The FXML file must specify a MainWindow controller";
         controller.setBubba(new Bubba("./data/bubba.txt"));
 
         stage.setTitle("Bubba");
