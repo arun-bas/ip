@@ -67,7 +67,7 @@ public class ParserTest {
     @Test
     public void parse_missingOrInvalidTaskNumber_throwsException() {
         for (String input : new String[] {"mark", "unmark", "delete", "mark abc",
-                "unmark 1.5", "delete 2147483648"}) {
+            "unmark 1.5", "delete 2147483648"}) {
             assertThrows(BubbaException.class, () -> Parser.parse(input), input);
         }
     }
@@ -75,11 +75,11 @@ public class ParserTest {
     @Test
     public void parse_missingTaskDetails_throwsException() {
         for (String input : new String[] {"find", "find   ", "todo", "todo   ",
-                "deadline", "deadline book",
-                "deadline book /by ", "event", "event meeting",
-                "event meeting /from 3/12/2026 1400",
-                "event meeting /from  /to 3/12/2026 1600",
-                "event meeting /from 3/12/2026 1400 /to "}) {
+            "deadline", "deadline book",
+            "deadline book /by ", "event", "event meeting",
+            "event meeting /from 3/12/2026 1400",
+            "event meeting /from  /to 3/12/2026 1600",
+            "event meeting /from 3/12/2026 1400 /to "}) {
             assertThrows(BubbaException.class, () -> Parser.parse(input), input);
         }
     }
@@ -87,8 +87,8 @@ public class ParserTest {
     @Test
     public void parse_invalidDateFormat_throwsException() {
         for (String input : new String[] {"deadline book /by tomorrow",
-                "event meeting /from tomorrow /to 3/12/2026 1600",
-                "event meeting /from 3/12/2026 1400 /to tomorrow"}) {
+            "event meeting /from tomorrow /to 3/12/2026 1600",
+            "event meeting /from 3/12/2026 1400 /to tomorrow"}) {
             assertThrows(BubbaException.class, () -> Parser.parse(input), input);
         }
     }
