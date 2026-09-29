@@ -16,11 +16,12 @@ public class Ui {
     }
 
     /**
-     * Displays the greeting and initial prompt.
+     * Returns the greeting and initial prompt.
+     *
+     * @return Welcome message.
      */
-    public void showWelcome() {
-        System.out.println("Hello! I'm Bubba.");
-        System.out.println("What can I do for you?");
+    public String getWelcomeMessage() {
+        return "Hello! I'm Bubba.\nWhat can I do for you?";
     }
 
     /**
@@ -33,86 +34,101 @@ public class Ui {
     }
 
     /**
-     * Displays the farewell message.
+     * Returns the farewell message.
+     *
+     * @return Farewell message.
      */
-    public void showGoodbye() {
-        System.out.println("Goodbye. See you again.");
+    public String getGoodbyeMessage() {
+        return "Goodbye. See you again.";
     }
 
     /**
-     * Displays tasks in order, numbered starting from one.
+     * Returns tasks in order, numbered starting from one.
      *
      * @param tasks Tasks to display.
+     * @return Formatted task-list message.
      */
-    public void showList(TaskList tasks) {
-        System.out.println("Current list of tasks:");
+    public String getTaskListMessage(TaskList tasks) {
+        StringBuilder message = new StringBuilder("Current list of tasks:");
         int number = 1;
         for (Task task : tasks.toList()) {
-            System.out.println(number++ + ". " + task);
+            message.append('\n').append(number++).append(". ").append(task);
         }
+        return message.toString();
     }
 
     /**
-     * Displays matching tasks in their original order, numbered from one.
+     * Returns matching tasks in their original order, numbered from one.
      *
      * @param tasks Matching tasks to display.
+     * @return Formatted matching-task message.
      */
-    public void showMatchingTasks(List<Task> tasks) {
-        System.out.println("Here are the matching tasks in your list:");
+    public String getMatchingTasksMessage(List<Task> tasks) {
+        StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
         int number = 1;
         for (Task task : tasks) {
-            System.out.println(number++ + ". " + task);
+            message.append('\n').append(number++).append(". ").append(task);
         }
+        return message.toString();
     }
 
     /**
-     * Displays confirmation of an addition and the updated task count.
+     * Returns confirmation of an addition and the updated task count.
      *
      * @param task Added task.
      * @param size Total task count after the addition.
+     * @return Formatted addition message.
      */
-    public void showAdded(Task task, int size) {
-        System.out.println(task instanceof Event ? "Added new task: " : "Added new task:");
-        System.out.println(task);
-        showCount(size);
+    public String getTaskAddedMessage(Task task, int size) {
+        return "Added new task:\n" + task + "\n" + getCountMessage(size);
     }
 
     /**
-     * Displays confirmation of a deletion and the remaining task count.
+     * Returns confirmation of a deletion and the remaining task count.
      *
      * @param task Deleted task.
      * @param size Total task count after the deletion.
+     * @return Formatted deletion message.
      */
-    public void showDeleted(Task task, int size) {
-        System.out.println("Removed the following task: ");
-        System.out.println(task);
-        showCount(size);
+    public String getTaskDeletedMessage(Task task, int size) {
+        return "Removed the following task:\n" + task + "\n" + getCountMessage(size);
     }
 
     /**
-     * Displays confirmation of a task's updated completion status.
+     * Returns confirmation of a task's updated completion status.
      *
      * @param task Updated task.
      * @param isDone Whether the task was marked as completed.
+     * @return Formatted status-update message.
      */
-    public void showMarked(Task task, boolean isDone) {
-        System.out.println(isDone
+    public String getTaskMarkedMessage(Task task, boolean isDone) {
+        String message = isDone
                 ? "Good job, this task is done!"
-                : "This task has been unmarked.");
-        System.out.println(task);
+                : "This task has been unmarked.";
+        return message + "\n" + task;
     }
 
-    private void showCount(int size) {
-        System.out.println("Number of tasks in list: " + size);
+    private String getCountMessage(int size) {
+        return "Number of tasks in list: " + size;
     }
 
     /**
-     * Displays an error with Bubba's error prefix.
+     * Returns an error with Bubba's error prefix.
      *
      * @param message Explanation of the error.
+     * @return Formatted error message.
      */
-    public void showError(String message) {
-        System.out.println("My bad... " + message);
+    public String getErrorMessage(String message) {
+        return "My bad... " + message;
+    }
+
+    /**
+     * Displays a message in the console.
+     *
+     * @param message Message to display.
+     */
+    public void showMessage(String message) {
+        System.out.println(message);
     }
 
     /**

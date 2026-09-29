@@ -1,0 +1,26 @@
+.main-window {
+    -fx-background-color: #f5f6fa;
+    -fx-padding: 12;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.user-bubble,
+.bubba-bubble {
+    -fx-background-radius: 12;
+    -fx-padding: 9 12;
+    -fx-font-size: 14;
+}
+
+.user-bubble {
+    -fx-background-color: #3367d6;
+    -fx-text-fill: white;
+}
+
+.bubba-bubble {
+    -fx-background-color: white;
+    -fx-text-fill: #202124;
+}
