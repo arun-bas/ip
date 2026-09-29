@@ -37,7 +37,7 @@ test {
 }
 
 application {
-    mainClass = 'duke.Duke'
+    mainClass = 'bubba.Bubba'
 }
 
 jar {
@@ -48,7 +48,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'bubba.jar'
 }
 
 run {

@@ -1,12 +1,12 @@
-package duke;
+package bubba;
 
 /** Coordinates user input, task operations and persistence for Bubba. */
-public class Duke {
+public class Bubba {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
 
-    public Duke(String filePath) {
+    public Bubba(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
         tasks = new TaskList(storage.load());
@@ -69,6 +69,6 @@ public class Duke {
     }
 
     public static void main(String[] args) {
-        new Duke("./data/duke.txt").run();
+        new Bubba("./data/bubba.txt").run();
     }
 }

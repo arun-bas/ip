@@ -1,4 +1,4 @@
-package duke;
+package bubba;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,10 +55,8 @@ public class Storage {
                         LocalDateTime by = LocalDateTime.parse(parts[3], formatter);
                         task = new Deadline(description, by);
                     } else if (type.equals("E")) {
-                        //String from = parts[3];
-                        //String to = parts[4];
-                        LocalDateTime from = LocalDateTime.parse(parts[3], formatter);
-                        LocalDateTime to = LocalDateTime.parse(parts[4], formatter);
+                        LocalDateTime from = parseEventDate(parts[3]);
+                        LocalDateTime to = parseEventDate(parts[4]);
                         task = new Event(description, from, to);
                     } else {
                         continue;
@@ -81,6 +79,15 @@ public class Storage {
         }
 
         return tasks;
+    }
+
+    /** Also accepts ISO dates written by earlier versions of the event serializer. */
+    private LocalDateTime parseEventDate(String text) {
+        try {
+            return LocalDateTime.parse(text, formatter);
+        } catch (DateTimeParseException e) {
+            return LocalDateTime.parse(text);
+        }
     }
 
     public void save(ArrayList<Task> tasks) throws BubbaException {

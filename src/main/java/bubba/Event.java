@@ -1,4 +1,4 @@
-package duke;
+package bubba;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +23,7 @@ public class Event extends Task {
     public String toStorageString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HHmm");
         return super.toStorageString()
-                + " | " + from
-                + " | " + to;
+                + " | " + from.format(formatter)
+                + " | " + to.format(formatter);
     }
 }
