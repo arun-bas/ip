@@ -1,11 +1,18 @@
 package bubba;
 
-/** Coordinates user input, task operations and persistence for Bubba. */
+/**
+ * Coordinates user input, task operations and persistence for Bubba.
+ */
 public class Bubba {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
 
+    /**
+     * Initializes the chatbot and loads saved tasks, displaying any loading warnings.
+     *
+     * @param filePath Path used to load and save tasks.
+     */
     public Bubba(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -15,7 +22,9 @@ public class Bubba {
         }
     }
 
-    /** Runs the command loop, leaving parsing and presentation to their own classes. */
+    /**
+     * Processes commands until the user exits or input ends, then closes console input.
+     */
     public void run() {
         ui.showWelcome();
         try {
@@ -59,7 +68,9 @@ public class Bubba {
         }
     }
 
-    /** Reports a save failure while retaining the user's change in memory. */
+    /**
+     * Reports a save failure while retaining the user's change in memory.
+     */
     private void saveTasks() {
         try {
             storage.save(tasks.toList());
@@ -68,6 +79,11 @@ public class Bubba {
         }
     }
 
+    /**
+     * Starts Bubba with its save file relative to the working directory.
+     *
+     * @param args Command-line arguments, which are not used.
+     */
     public static void main(String[] args) {
         new Bubba("./data/bubba.txt").run();
     }

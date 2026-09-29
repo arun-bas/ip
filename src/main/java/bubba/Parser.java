@@ -4,19 +4,54 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-/** Interprets user commands without changing tasks or interacting with the console. */
+/**
+ * Interprets user commands without changing the task list or interacting with the console.
+ */
 public class Parser {
     private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
-    /** The operations supported by the existing command language. */
-    public enum Type {
-        EXIT, LIST, MARK, UNMARK, DELETE, ADD
+    /**
+     * Creates a parser; commands can also be parsed directly through {@link #parse(String)}.
+     */
+    public Parser() {
     }
 
-    /** Parsed input: ADD uses task, while MARK, UNMARK and DELETE use taskNumber. */
+    /**
+     * Defines the operations supported by the command language.
+     */
+    public enum Type {
+        /** Ends the command loop. */
+        EXIT,
+        /** Displays all tasks. */
+        LIST,
+        /** Marks a task as completed. */
+        MARK,
+        /** Marks a task as incomplete. */
+        UNMARK,
+        /** Removes a task. */
+        DELETE,
+        /** Appends a new task. */
+        ADD
+    }
+
+    /**
+     * Carries an interpreted command and the arguments needed to execute it.
+     *
+     * @param type Operation to execute.
+     * @param task Task for an ADD command, or {@code null} for other operations.
+     * @param taskNumber One-based number for MARK, UNMARK or DELETE, or zero for other operations.
+     */
     public record ParsedCommand(Type type, Task task, int taskNumber) {
     }
 
+    /**
+     * Parses a command, including task descriptions, numbers and dates where applicable.
+     * Dates use {@code d/M/yyyy HHmm}. Task-number bounds are checked by {@link TaskList}, not here.
+     *
+     * @param input Non-null command line entered by the user.
+     * @return Command and arguments ready for execution.
+     * @throws BubbaException If the command is unknown or required arguments cannot be parsed.
+     */
     public static ParsedCommand parse(String input) throws BubbaException {
         if (input.equals("bye")) {
             return new ParsedCommand(Type.EXIT, null, 0);
