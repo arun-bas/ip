@@ -59,9 +59,12 @@ public class MainWindow {
         }
 
         String response = bubba.getResponse(input);
+        DialogBox responseDialog = bubba.isLastResponseError()
+                ? DialogBox.getErrorDialog(response)
+                : DialogBox.getBubbaDialog(response);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input),
-                DialogBox.getBubbaDialog(response));
+                responseDialog);
         userInput.clear();
 
         if (bubba.isExitRequested()) {

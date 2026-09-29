@@ -8,6 +8,7 @@ public class Bubba {
     private final TaskList tasks;
     private final Ui ui;
     private boolean isExitRequested;
+    private boolean isLastResponseError;
 
     /**
      * Initializes the chatbot and loads saved tasks.
@@ -19,6 +20,7 @@ public class Bubba {
         storage = new Storage(filePath);
         tasks = new TaskList(storage.load());
         isExitRequested = false;
+        isLastResponseError = false;
     }
 
     /**
@@ -59,6 +61,7 @@ public class Bubba {
      * @return Bubba's response, including validation or storage errors.
      */
     public String getResponse(String input) {
+        isLastResponseError = false;
         try {
             Parser.ParsedCommand command = Parser.parse(input);
             Task task;
@@ -92,8 +95,18 @@ public class Bubba {
                     throw new AssertionError("Unexpected command type: " + command.type());
             }
         } catch (BubbaException e) {
+            isLastResponseError = true;
             return ui.getErrorMessage(e.getMessage());
         }
+    }
+
+    /**
+     * Returns whether the most recent response reports an error.
+     *
+     * @return {@code true} if processing the latest command failed.
+     */
+    public boolean isLastResponseError() {
+        return isLastResponseError;
     }
 
     /**
