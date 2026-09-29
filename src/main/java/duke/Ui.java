@@ -1,3 +1,5 @@
+package duke;
+
 import java.util.Scanner;
 
 /** Handles console input and all messages shown to the user. */

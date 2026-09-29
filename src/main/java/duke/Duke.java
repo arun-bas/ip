@@ -1,3 +1,5 @@
+package duke;
+
 /** Coordinates user input, task operations and persistence for Bubba. */
 public class Duke {
     private final Storage storage;
