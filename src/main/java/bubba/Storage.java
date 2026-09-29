@@ -9,21 +9,40 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-/** Loads and saves task records; leaves displaying errors to the user interface. */
+/**
+ * Loads and saves task records, leaving error presentation to the user interface.
+ */
 public class Storage {
     private final ArrayList<String> loadWarnings = new ArrayList<>();
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private final String filePath;
 
+    /**
+     * Creates storage for the given path without reading or writing the file.
+     *
+     * @param filePath Save-file path, resolved against the working directory if relative.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    /** Returns a copy of warnings from the most recent load for Ui to display. */
+    /**
+     * Returns warnings from the most recent load for the user interface to display.
+     *
+     * @return Copy of the warning list.
+     */
     public ArrayList<String> getLoadWarnings() {
         return new ArrayList<>(loadWarnings);
     }
 
+    /**
+     * Loads tasks in file order, returning an empty list if the file does not exist.
+     * Blank lines and unknown task types are skipped. Invalid dates are skipped with a warning.
+     * Loading warnings are cleared at the start of each call.
+     *
+     * @return Loaded tasks with their saved completion states.
+     * @throws ArrayIndexOutOfBoundsException If a nonblank record lacks required fields.
+     */
     public ArrayList<Task> load() {
         loadWarnings.clear();
         ArrayList<Task> tasks = new ArrayList<>();
@@ -81,7 +100,13 @@ public class Storage {
         return tasks;
     }
 
-    /** Also accepts ISO dates written by earlier versions of the event serializer. */
+    /**
+     * Parses a stored event date, also accepting ISO dates written by earlier versions.
+     *
+     * @param text Stored date and time.
+     * @return Parsed date and time.
+     * @throws DateTimeParseException If neither supported format can parse the value.
+     */
     private LocalDateTime parseEventDate(String text) {
         try {
             return LocalDateTime.parse(text, formatter);
@@ -90,6 +115,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Replaces the save file with the supplied tasks in list order.
+     * Creates missing parent directories before opening the file.
+     *
+     * @param tasks Tasks to serialize, including their completion states.
+     * @throws BubbaException If the file cannot be opened for writing.
+     */
     public void save(ArrayList<Task> tasks) throws BubbaException {
         try {
             File file = new File(filePath);
