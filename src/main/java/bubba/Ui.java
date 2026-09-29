@@ -82,7 +82,9 @@ public class Ui {
      * @param isDone Whether the task was marked as completed.
      */
     public void showMarked(Task task, boolean isDone) {
-        System.out.println(isDone ? "Good job, this task is done!" : "This task has been unmarked.");
+        System.out.println(isDone
+                ? "Good job, this task is done!"
+                : "This task has been unmarked.");
         System.out.println(task);
     }
 

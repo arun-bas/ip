@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class Deadline extends Task {
     /** Due date and time of the task. */
     protected LocalDateTime by;
+
     /**
      * Creates an incomplete deadline task.
      *

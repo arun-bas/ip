@@ -12,6 +12,7 @@ public enum TaskType {
     EVENT("E");
 
     private final String symbol;
+
     TaskType(String symbol) {
         this.symbol = symbol;
     }
@@ -21,7 +22,7 @@ public enum TaskType {
      *
      * @return Single-letter task symbol.
      */
-    public String getSymbol(){
+    public String getSymbol() {
         return symbol;
     }
 }

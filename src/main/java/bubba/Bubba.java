@@ -34,30 +34,31 @@ public class Bubba {
                     Parser.ParsedCommand command = Parser.parse(input);
                     Task task;
                     switch (command.type()) {
-                    case EXIT:
-                        ui.showGoodbye();
-                        return;
-                    case LIST:
-                        ui.showList(tasks);
-                        break;
-                    case ADD:
-                        task = command.task();
-                        tasks.add(task);
-                        saveTasks();
-                        ui.showAdded(task, tasks.size());
-                        break;
-                    case DELETE:
-                        task = tasks.delete(command.taskNumber());
-                        saveTasks();
-                        ui.showDeleted(task, tasks.size());
-                        break;
-                    case MARK:
-                    case UNMARK:
-                        boolean isDone = command.type() == Parser.Type.MARK;
-                        task = tasks.mark(command.taskNumber(), isDone);
-                        saveTasks();
-                        ui.showMarked(task, isDone);
-                        break;
+                        case EXIT:
+                            ui.showGoodbye();
+                            return;
+                        case LIST:
+                            ui.showList(tasks);
+                            break;
+                        case ADD:
+                            task = command.task();
+                            tasks.add(task);
+                            saveTasks();
+                            ui.showAdded(task, tasks.size());
+                            break;
+                        case DELETE:
+                            task = tasks.delete(command.taskNumber());
+                            saveTasks();
+                            ui.showDeleted(task, tasks.size());
+                            break;
+                        case MARK:
+                            // Fallthrough
+                        case UNMARK:
+                            boolean isDone = command.type() == Parser.Type.MARK;
+                            task = tasks.mark(command.taskNumber(), isDone);
+                            saveTasks();
+                            ui.showMarked(task, isDone);
+                            break;
                     }
                 } catch (BubbaException e) {
                     ui.showError(e.getMessage());

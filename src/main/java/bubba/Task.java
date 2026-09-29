@@ -50,6 +50,7 @@ public class Task {
                 + " | "
                 + description;
     }
+
     /**
      * Returns the task type, completion indicator and description for display.
      *

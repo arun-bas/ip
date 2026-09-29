@@ -1,14 +1,17 @@
 package bubba;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-/** Checks deletion boundaries, ordering and preservation of tasks after invalid requests. */
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+/**
+ * Checks deletion boundaries, ordering and preservation of tasks after invalid requests.
+ */
 public class TaskListTest {
     @Test
     public void delete_validNumber_returnsTaskAndPreservesRemainingOrder() throws BubbaException {
@@ -16,14 +19,14 @@ public class TaskListTest {
             Task first = new Todo("first");
             Task second = new Todo("second");
             Task third = new Todo("third");
-            List<Task> original = List.of(first, second, third);
-            TaskList tasks = new TaskList(original);
+            List<Task> originalTasks = List.of(first, second, third);
+            TaskList tasks = new TaskList(originalTasks);
 
-            assertSame(original.get(number - 1), tasks.delete(number));
+            assertSame(originalTasks.get(number - 1), tasks.delete(number));
             assertEquals(2, tasks.size());
-            List<Task> expected = new java.util.ArrayList<>(original);
-            expected.remove(number - 1);
-            assertEquals(expected, tasks.toList());
+            List<Task> expectedTasks = new ArrayList<>(originalTasks);
+            expectedTasks.remove(number - 1);
+            assertEquals(expectedTasks, tasks.toList());
         }
     }
 

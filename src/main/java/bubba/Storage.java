@@ -3,11 +3,11 @@ package bubba;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Loads and saves task records, leaving error presentation to the user interface.
@@ -56,7 +56,7 @@ public class Storage {
             Scanner scanner = new Scanner(file);
 
             while (scanner.hasNextLine()) {
-                String line =  scanner.nextLine();
+                String line = scanner.nextLine();
                 if (line.trim().isEmpty()) {
                     continue;
                 }
@@ -86,7 +86,7 @@ public class Storage {
                     }
 
                     tasks.add(task);
-                } catch (DateTimeParseException e){
+                } catch (DateTimeParseException e) {
                     loadWarnings.add("Enter the correct format!");
                 }
             }
@@ -133,7 +133,7 @@ public class Storage {
 
             PrintWriter writer = new PrintWriter(file);
 
-            for (Task task: tasks) {
+            for (Task task : tasks) {
                 writer.println(task.toStorageString());
             }
 
