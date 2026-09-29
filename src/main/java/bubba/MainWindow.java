@@ -42,6 +42,8 @@ public class MainWindow {
      * @param bubba Chatbot used to process commands.
      */
     public void setBubba(Bubba bubba) {
+        assert bubba != null : "The main window requires a Bubba instance";
+
         this.bubba = bubba;
         dialogContainer.getChildren().add(
                 DialogBox.getBubbaDialog(bubba.getWelcomeMessage()));
@@ -49,6 +51,8 @@ public class MainWindow {
 
     @FXML
     private void handleUserInput() {
+        assert bubba != null : "Bubba must be initialized before handling input";
+
         String input = userInput.getText().trim();
         if (input.isEmpty()) {
             return;
