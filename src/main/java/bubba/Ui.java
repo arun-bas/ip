@@ -21,7 +21,7 @@ public class Ui {
      * @return Welcome message.
      */
     public String getWelcomeMessage() {
-        return "Hello! I'm Bubba.\nWhat can I do for you?";
+        return joinLines("Hello! I'm Bubba.", "What can I do for you?");
     }
 
     /**
@@ -80,7 +80,7 @@ public class Ui {
      * @return Formatted addition message.
      */
     public String getTaskAddedMessage(Task task, int size) {
-        return "Added new task:\n" + task + "\n" + getCountMessage(size);
+        return joinLines("Added new task:", task.toString(), getCountMessage(size));
     }
 
     /**
@@ -91,7 +91,7 @@ public class Ui {
      * @return Formatted deletion message.
      */
     public String getTaskDeletedMessage(Task task, int size) {
-        return "Removed the following task:\n" + task + "\n" + getCountMessage(size);
+        return joinLines("Removed the following task:", task.toString(), getCountMessage(size));
     }
 
     /**
@@ -105,11 +105,21 @@ public class Ui {
         String message = isDone
                 ? "Good job, this task is done!"
                 : "This task has been unmarked.";
-        return message + "\n" + task;
+        return joinLines(message, task.toString());
     }
 
     private String getCountMessage(int size) {
         return "Number of tasks in list: " + size;
+    }
+
+    /**
+     * Joins any number of message lines using a newline separator.
+     *
+     * @param lines Message lines in display order.
+     * @return Lines joined into one message.
+     */
+    private static String joinLines(String... lines) {
+        return String.join("\n", lines);
     }
 
     /**
