@@ -20,6 +20,12 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_surroundingWhitespace_ignoresWhitespace() throws BubbaException {
+        assertEquals(Parser.Type.LIST, Parser.parse("   list   ").type());
+        assertEquals("read book", Parser.parse("   todo read book   ").task().description);
+    }
+
+    @Test
     public void parse_numberedCommands_preservesTaskNumber() throws BubbaException {
         String[] inputs = {"mark 2", "unmark 2", "delete 2"};
         Parser.Type[] types = {Parser.Type.MARK, Parser.Type.UNMARK, Parser.Type.DELETE};
@@ -90,6 +96,15 @@ public class ParserTest {
         for (String input : new String[] {"deadline book /by tomorrow",
             "event meeting /from tomorrow /to 3/12/2026 1600",
             "event meeting /from 3/12/2026 1400 /to tomorrow"}) {
+            assertThrows(BubbaException.class, () -> Parser.parse(input), input);
+        }
+    }
+
+    @Test
+    public void parse_eventWithInvalidTimeRange_throwsException() {
+        for (String input : new String[] {
+            "event meeting /from 3/12/2026 1600 /to 3/12/2026 1400",
+            "event meeting /from 3/12/2026 1600 /to 3/12/2026 1600"}) {
             assertThrows(BubbaException.class, () -> Parser.parse(input), input);
         }
     }

@@ -59,4 +59,20 @@ public class StorageTest {
         assertEquals("E | 1 | meeting | 03/12/2026 1400 | 03/12/2026 1630",
                 Files.readString(file).strip());
     }
+
+    @Test
+    public void load_malformedRecords_skipsRecordsWithWarnings() throws Exception {
+        Path file = directory.resolve("tasks.txt");
+        Files.writeString(file, "T | 0 | valid task\n"
+                + "D | 0 | missing date\n"
+                + "E | 0 | bad date | tomorrow | later\n"
+                + "X | 0 | unknown type\n");
+
+        Storage storage = new Storage(file.toString());
+        ArrayList<Task> tasks = storage.load();
+
+        assertEquals(1, tasks.size());
+        assertEquals("[T][ ] valid task", tasks.get(0).toString());
+        assertEquals(3, storage.getLoadWarnings().size());
+    }
 }

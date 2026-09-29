@@ -73,15 +73,20 @@ public class Storage {
             if (task != null) {
                 tasks.add(task);
             }
-        } catch (DateTimeParseException e) {
-            loadWarnings.add("Enter the correct format!");
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException
+                 | DateTimeParseException e) {
+            loadWarnings.add("Skipped an invalid task record: " + line);
         }
     }
 
     private Task parseTask(String line) {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(" \\| ", -1);
+        if (parts.length < 3 || parts[2].isBlank()
+                || !(parts[1].equals("0") || parts[1].equals("1"))) {
+            throw new IllegalArgumentException("Invalid task record");
+        }
         Task task = createTask(parts);
-        if (task != null && parts[1].equals("1")) {
+        if (parts[1].equals("1")) {
             task.done();
         }
         return task;
@@ -91,16 +96,25 @@ public class Storage {
         String description = parts[2];
         switch (parts[0]) {
             case "T":
+                requireFieldCount(parts, 3);
                 return new Todo(description);
             case "D":
+                requireFieldCount(parts, 4);
                 LocalDateTime by = LocalDateTime.parse(parts[3], formatter);
                 return new Deadline(description, by);
             case "E":
+                requireFieldCount(parts, 5);
                 LocalDateTime from = parseEventDate(parts[3]);
                 LocalDateTime to = parseEventDate(parts[4]);
                 return new Event(description, from, to);
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown task type");
+        }
+    }
+
+    private void requireFieldCount(String[] parts, int expectedCount) {
+        if (parts.length != expectedCount) {
+            throw new IllegalArgumentException("Invalid number of task fields");
         }
     }
 

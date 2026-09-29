@@ -59,6 +59,7 @@ public class Parser {
      * @throws BubbaException If the command is unknown or required arguments cannot be parsed.
      */
     public static ParsedCommand parse(String input) throws BubbaException {
+        input = input.trim();
         if (input.equals("bye")) {
             return new ParsedCommand(Type.EXIT, null, 0, null);
         }
@@ -141,9 +142,12 @@ public class Parser {
             throw new BubbaException("The to time cannot be empty!");
         }
         try {
-            return new Event(
-                    parts[0], LocalDateTime.parse(times[0].trim(), INPUT_FORMATTER),
-                    LocalDateTime.parse(times[1].trim(), INPUT_FORMATTER));
+            LocalDateTime from = LocalDateTime.parse(times[0].trim(), INPUT_FORMATTER);
+            LocalDateTime to = LocalDateTime.parse(times[1].trim(), INPUT_FORMATTER);
+            if (!from.isBefore(to)) {
+                throw new BubbaException("The event must end after it starts!");
+            }
+            return new Event(parts[0], from, to);
         } catch (DateTimeParseException e) {
             throw new BubbaException("Enter the event time in the correct format d/M/yyyy HHmm!");
         }
